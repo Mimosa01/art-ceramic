@@ -1,26 +1,163 @@
 @import "tailwindcss";
 
+/* Локальные variable fonts (см. src/assets/fonts) */
+@font-face {
+  font-family: "Cormorant Garamond";
+  src:
+    url("/fonts/CormorantGaramond-VariableFont_wght.woff2") format("woff2-variations"),
+    url("/fonts/CormorantGaramond-VariableFont_wght.woff") format("woff-variations");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  src:
+    url("/fonts/CormorantGaramond-Italic-VariableFont_wght.woff2") format("woff2-variations"),
+    url("/fonts/CormorantGaramond-Italic-VariableFont_wght.woff") format("woff-variations");
+  font-weight: 300 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Jost";
+  src:
+    url("/fonts/Jost-VariableFont_wght.woff2") format("woff2-variations"),
+    url("/fonts/Jost-VariableFont_wght.woff") format("woff-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Jost";
+  src:
+    url("/fonts/Jost-Italic-VariableFont_wght.woff2") format("woff2-variations"),
+    url("/fonts/Jost-Italic-VariableFont_wght.woff") format("woff-variations");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/*
+ * Вертикальная галерея (скелетон): ~80% от прежних 88vh / 820px / 420px — в паре с Gallery.tsx.
+ */
+.mobile-gallery-height {
+  min-height: 336px;
+  height: min(70.4vh, 656px);
+}
+
+.h-mobile-vp {
+  height: 100vh;
+}
+
+.min-h-mobile-vp {
+  min-height: 100vh;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --red-deep:   #48040b;
+  --red-dark:   #84131e;
+  --red-mid:    #c10e1e;
+  --red-accent: #f83444;
+  --red-light:  #ff9da3;
+  --cream:      #fdf6f0;
+  --warm-white: #fff8f5;
+  --crimson-600: #e51627;
+  --font-cormorant-garamond: "Cormorant Garamond", serif;
+  --font-jost: "Jost", sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  --color-red-deep:   var(--red-deep);
+  --color-red-dark:   var(--red-dark);
+  --color-red-mid:    var(--red-mid);
+  --color-red-accent: var(--red-accent);
+  --color-red-light:  var(--red-light);
+  --color-cream:      var(--cream);
+  --color-warm-white: var(--warm-white);
+  --color-crimson-600: var(--crimson-600);
+  --font-cormorant-garamond: var(--font-cormorant-garamond);
+  --font-jost: var(--font-jost);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  /* Фиксированный хедер — якоря не прячут заголовок под навбаром */
+  /* Чуть больше высоты шапки с учётом env() в Nav.module.css */
+  scroll-padding-top: 6.5rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Jost', sans-serif;
+  background: var(--cream);
+  color: var(--red-deep);
+  overflow-x: hidden;
+}
+
+/* ── NOISE TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: .35;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--red-mid); border-radius: 3px; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  font-size: .75rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  line-height: 1.1;
+}
+
+
+/* ── SCROLL REVEAL ── */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { opacity: 0; animation: fadeUp .8s ease forwards; }
+.delay-1 { animation-delay: .15s; }
+.delay-2 { animation-delay: .3s; }
+.delay-3 { animation-delay: .45s; }
+.delay-4 { animation-delay: .6s; }
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+.float { animation: floatY 5s ease-in-out infinite; }
+.float-slow { animation: floatY 7s ease-in-out infinite; }
+
+/* ── DECORATIVE DOTS ── */
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(193,14,30,.15) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+footer {
+  background: var(--red-deep);
 }
