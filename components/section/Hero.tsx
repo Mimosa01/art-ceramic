@@ -46,7 +46,7 @@ export default function Hero() {
           Каждая кружка — маленькая картина. Роспись глазурью, обжиг, характер. Создаём вместе то, что останется с вами навсегда.
         </p>
         <div className="mt-12 flex flex-wrap items-center gap-5 fade-up delay-3">
-          <Button variant="primary">
+          <Button variant="primary" href="#order">
             Заказать кружку
             <svg
               width="16"
@@ -59,7 +59,7 @@ export default function Hero() {
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </Button>
-          <Button variant="outline" className="text-warm-white!">
+          <Button variant="outline" className="text-warm-white!" href="#gallery">
             Посмотреть работы
           </Button>
         </div>

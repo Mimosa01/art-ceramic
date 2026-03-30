@@ -2,14 +2,15 @@ import type { PostgrestError } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 import {
   ORDERS_TABLE,
-  type OrderInsert,
   type OrderRow,
   type OrderStatus,
 } from "@/types/order";
 
+export type OrderServiceError = { message: string };
+
 export type OrderQueryResult<T> = {
   data: T;
-  error: PostgrestError | null;
+  error: PostgrestError | OrderServiceError | null;
 };
 
 const table = ORDERS_TABLE;
@@ -20,42 +21,9 @@ function trimOrNull(value: string | null | undefined): string | null {
   return t === "" ? null : t;
 }
 
-/** Колонка `design_preview_url` в БД может быть NOT NULL — пустое значение как `''`. */
-function designPreviewForInsert(value: string | null | undefined): string {
-  return trimOrNull(value) ?? "";
-}
-
-function toOrderInsert(input: {
-  customer_name: string;
-  customer_phone: string;
-  customer_telegram?: string | null;
-  customer_comment?: string | null;
-  design_preview_url?: string | null;
-}): OrderInsert {
-  return {
-    customer_name: input.customer_name.trim(),
-    customer_phone: input.customer_phone.trim(),
-    customer_telegram: trimOrNull(input.customer_telegram),
-    customer_comment: trimOrNull(input.customer_comment),
-    design_preview_url: designPreviewForInsert(input.design_preview_url),
-    status: "new",
-  };
-}
-
-async function insertOrder(
-  payload: OrderInsert,
-): Promise<OrderQueryResult<OrderRow | null>> {
-  const { data, error } = await supabase
-    .from(table)
-    .insert(payload)
-    .select("*")
-    .maybeSingle();
-
-  return { data: data ?? null, error };
-}
-
 /**
- * Отправка заказа с лендинга (RLS: `INSERT` для `anon` на `orders`).
+ * Отправка заказа с лендинга через серверный API:
+ * insert в `orders` + попытка отправки push на сервере.
  */
 export async function submitOrderFromForm(input: {
   customer_name: string;
@@ -64,7 +32,32 @@ export async function submitOrderFromForm(input: {
   customer_comment?: string | null;
   design_preview_url?: string | null;
 }): Promise<OrderQueryResult<OrderRow | null>> {
-  return insertOrder(toOrderInsert(input));
+  const response = await fetch("/api/orders/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      customer_name: input.customer_name.trim(),
+      customer_phone: input.customer_phone.trim(),
+      customer_telegram: trimOrNull(input.customer_telegram),
+      customer_comment: trimOrNull(input.customer_comment),
+      design_preview_url: trimOrNull(input.design_preview_url),
+    }),
+  });
+
+  const result = (await response.json()) as {
+    ok: boolean;
+    message?: string;
+    order?: OrderRow | null;
+  };
+
+  if (!response.ok || !result.ok) {
+    return {
+      data: null,
+      error: { message: result.message ?? "Не удалось отправить заявку." },
+    };
+  }
+
+  return { data: result.order ?? null, error: null };
 }
 
 /** Список заявок для админки (RLS: доступ у `authenticated`). */

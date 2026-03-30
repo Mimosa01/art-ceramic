@@ -25,9 +25,7 @@ export function AdminLayoutClient({
 
       <div className="flex min-h-mobile-vp min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-(--red-deep)/10 bg-(--cream)/95 px-4 py-3 backdrop-blur-md md:px-8">
-          <div className="min-w-0">
-            <p className="section-label text-(--red-mid)">Админ-панель</p>
-          </div>
+          <p className="section-label text-(--red-mid)">Админ-панель</p>
           <Button
             variant="outline"
             type="button"

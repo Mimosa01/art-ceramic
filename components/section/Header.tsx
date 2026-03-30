@@ -28,7 +28,7 @@ export default function Header() {
     >
       <Logo variant="primary" />
       <Nav />
-      <Button variant="primary">
+      <Button variant="primary" href="#order">
         Заказать
       </Button>
     </header>

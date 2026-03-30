@@ -22,7 +22,7 @@ export function TikTokGallery({
   items,
   rootClassName = "relative min-h-0 h-mobile-vp w-full bg-red-deep",
   sectionNavPrevHref = "#about",
-  sectionNavNextHref = "#order",
+  sectionNavNextHref = "#care",
 }: TikTokGalleryProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {

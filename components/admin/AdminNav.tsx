@@ -21,7 +21,7 @@ function linkClassName(isActive: boolean) {
 }
 
 function isPathActive(pathname: string, href: string) {
-  return pathname === href || pathname == (`${href}`);
+  return pathname === href;
 }
 
 function NavLinks({
