@@ -1,5 +1,6 @@
 import type { OrderInsert, OrderRow } from "@/types/order";
 import { createClient } from "@supabase/supabase-js";
+import { sendLeadPushToAll } from "@/lib/push";
 import { NextResponse } from "next/server";
 
 type SubmitOrderBody = {
@@ -72,6 +73,21 @@ export async function POST(request: Request) {
     }
 
     const order = (data ?? null) as OrderRow | null;
+
+    if (order) {
+      // Пуш-ошибки не должны ломать создание заявки.
+      try {
+        const stats = await sendLeadPushToAll({
+          id: order.id,
+          name: order.customer_name,
+          contact: order.customer_phone,
+          service: null,
+        });
+        console.log("[push] order notification stats:", stats);
+      } catch (e) {
+        console.error("[push] Failed to send order notification:", e);
+      }
+    }
 
     return NextResponse.json({ ok: true, order });
   } catch (error) {
