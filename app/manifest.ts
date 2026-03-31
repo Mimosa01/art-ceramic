@@ -48,10 +48,10 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     shortcuts: [
       {
-        name: "Главная",
-        short_name: "Главная",
-        url: "/",
-        description: "Лендинг и заказ кружки",
+        name: "Админка",
+        short_name: "Админка",
+        url: "/admin",
+        description: "Панель заявок и уведомлений",
       },
     ],
   };

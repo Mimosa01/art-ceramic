@@ -74,22 +74,18 @@ export async function POST(request: Request) {
 
     const order = (data ?? null) as OrderRow | null;
 
-    let push: { ok: boolean; message?: string; stats?: unknown } = { ok: true };
-    try {
-      const stats = await sendLeadPushToAll({
-        id: order?.id,
-        name: payload.customer_name,
-        contact: payload.customer_phone,
-        service: null,
-      });
-      push = { ok: true, stats };
-    } catch (pushError) {
-      const message =
-        pushError instanceof Error
-          ? pushError.message
-          : "Не удалось отправить push.";
-      push = { ok: false, message };
-    }
+    const stats = await sendLeadPushToAll({
+      id: order?.id,
+      name: payload.customer_name,
+      contact: payload.customer_phone,
+      service: null,
+    });
+    const pushOk = stats.reason === "ok" || stats.reason === "no_subscriptions";
+    const push = {
+      ok: pushOk,
+      message: pushOk ? undefined : stats.errorMessage ?? "Не удалось отправить push.",
+      stats,
+    };
 
     return NextResponse.json({ ok: true, order, push });
   } catch (error) {
