@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 type PermissionState = NotificationPermission | "unsupported";
 
 const SW_URL = "/sw.js";
+const SW_SCOPE = "/admin";
 const NOTIFICATION_ICON = "/images/iza.webp";
 
 function urlBase64ToUint8Array(base64String: string) {
@@ -21,7 +22,7 @@ function urlBase64ToUint8Array(base64String: string) {
 
 async function ensureServiceWorkerRegistration(): Promise<ServiceWorkerRegistration> {
   const reg = await navigator.serviceWorker.register(SW_URL, {
-    scope: "/",
+    scope: SW_SCOPE,
   });
   await navigator.serviceWorker.ready;
   return reg;
