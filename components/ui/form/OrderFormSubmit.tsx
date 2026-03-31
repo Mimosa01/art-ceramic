@@ -57,10 +57,31 @@ export default function OrderFormSubmit(props: OrderFormSubmitProps) {
   const isSubmitting = submitStatus === "submitting";
   const isDisabled = disabled || isSubmitting;
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (isFormMode) return;
     if ("payload" in props) {
-      void submitOrder(props.payload);
+      const ok = await submitOrder(props.payload);
+      if (!ok) return;
+
+      const name = props.payload.customer_name;
+      const contact =
+        props.payload.customer_phone ||
+        props.payload.customer_telegram ||
+        "";
+
+      if (!name || !contact) return;
+
+      void fetch("/api/push/notify-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lead: {
+            name,
+            contact,
+            service: null,
+          },
+        }),
+      });
     }
   };
 
@@ -69,7 +90,7 @@ export default function OrderFormSubmit(props: OrderFormSubmitProps) {
       <Button
         variant="primary"
         type={isFormMode ? "submit" : "button"}
-        onClick={isFormMode ? undefined : handleClick}
+        onClick={isFormMode ? undefined : () => void handleClick()}
         disabled={isDisabled}
         className={`w-full justify-center ${className}`.trim()}
         aria-busy={isSubmitting}

@@ -15,7 +15,27 @@ export default function Form() {
   const success = submitStatus === "success";
 
   const onSubmit = handleSubmit(async (data) => {
-    await submitOrder(orderFormValuesToPayload(data));
+    const payload = orderFormValuesToPayload(data);
+    const ok = await submitOrder(payload);
+    if (!ok) return;
+
+    const name = payload.customer_name;
+    const contact =
+      payload.customer_phone || payload.customer_telegram || "";
+
+    if (!name || !contact) return;
+
+    void fetch("/api/push/notify-lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        lead: {
+          name,
+          contact,
+          service: null,
+        },
+      }),
+    });
   });
 
   const isSubmitting = submitStatus === "submitting";
