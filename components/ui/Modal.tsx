@@ -30,12 +30,31 @@ function ModalOrderBody({
   const isSubmitting = submitStatus === "submitting";
 
   const onSubmit = handleSubmit(async (data) => {
-    await submitOrder(
-      buildOrderPayloadFromModal({
-        ...data,
-        design_preview_url: referenceImageUrl,
+    const payload = buildOrderPayloadFromModal({
+      ...data,
+      design_preview_url: referenceImageUrl,
+    });
+
+    const ok = await submitOrder(payload);
+    if (!ok) return;
+
+    const name = payload.customer_name;
+    const contact =
+      payload.customer_phone || payload.customer_telegram || "";
+
+    if (!name || !contact) return;
+
+    void fetch("/api/push/notify-lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        lead: {
+          name,
+          contact,
+          service: null,
+        },
       }),
-    );
+    });
   });
 
   return (
