@@ -30,6 +30,11 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const pathname = request.nextUrl.pathname;
+  // PWA assets (manifest/service worker) не должны зависеть от авторизации admin.
+  // Иначе браузер может получить редирект вместо корректного файла и PWA "сломается".
+  if (pathname === "/admin/manifest.webmanifest" || pathname === "/admin/sw.js") {
+    return response;
+  }
   const isAdminRoute = pathname.startsWith("/admin");
   const isLoginRoute = pathname === "/admin/login";
 

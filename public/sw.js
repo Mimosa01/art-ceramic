@@ -32,7 +32,11 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const url = event.notification.data?.url || "/admin";
+  const origin = self.location && self.location.origin ? self.location.origin : "";
+  const rawUrl = event.notification.data?.url || "/admin";
+  const url = /^https?:\/\//i.test(rawUrl)
+    ? rawUrl
+    : new URL(rawUrl, origin || undefined).toString();
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {

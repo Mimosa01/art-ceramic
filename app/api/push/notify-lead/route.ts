@@ -29,7 +29,12 @@ export async function POST(request: Request) {
       service: lead.service ?? null,
     });
 
-    return NextResponse.json({ ok: true, stats });
+    const pushOk = stats.reason === "ok" || stats.reason === "no_subscriptions";
+    return NextResponse.json({
+      ok: pushOk,
+      stats,
+      message: pushOk ? undefined : stats.errorMessage ?? "Не удалось отправить push.",
+    });
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Unexpected error.";
