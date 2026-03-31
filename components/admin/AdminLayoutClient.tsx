@@ -1,6 +1,5 @@
 "use client";
 
-import AdminOrderPushPanel from "@/components/admin/AdminOrderPushPanel";
 import { AdminNavMobile, AdminNavSidebar } from "@/components/admin/AdminNav";
 import { useAdminSignOut } from "@/components/admin/hooks/useAdminSignOut";
 import Button from "@/components/ui/Button";
@@ -38,7 +37,7 @@ export function AdminLayoutClient({
 
         <main className="flex-1 overflow-auto pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-0">
           <div className="border-b border-(--red-deep)/10 bg-(--cream) px-4 py-3 md:px-8">
-            <AdminOrderPushPanel />
+            {/* Push-уведомления отключены: панель больше не отображается. */}
           </div>
           {children}
         </main>

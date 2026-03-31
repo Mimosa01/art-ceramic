@@ -1,4 +1,3 @@
-import { sendLeadPushToAll } from "@/lib/push";
 import type { OrderInsert, OrderRow } from "@/types/order";
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
@@ -74,20 +73,7 @@ export async function POST(request: Request) {
 
     const order = (data ?? null) as OrderRow | null;
 
-    const stats = await sendLeadPushToAll({
-      id: order?.id,
-      name: payload.customer_name,
-      contact: payload.customer_phone,
-      service: null,
-    });
-    const pushOk = stats.reason === "ok" || stats.reason === "no_subscriptions";
-    const push = {
-      ok: pushOk,
-      message: pushOk ? undefined : stats.errorMessage ?? "Не удалось отправить push.",
-      stats,
-    };
-
-    return NextResponse.json({ ok: true, order, push });
+    return NextResponse.json({ ok: true, order });
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Unexpected error.";
