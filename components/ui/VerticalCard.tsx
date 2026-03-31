@@ -77,8 +77,8 @@ export function VerticalCard({
           </p>
         ) : null}
         {item.price != null ? (
-          <p className="mt-2 text-sm font-semibold text-white tabular-nums">
-            {formatGalleryPriceRub(item.price)}
+          <p className="mt-2 text-sm bg-warm-white px-2 py-1 w-fit rounded-full font-semibold text-red-deep tabular-nums">
+            от {formatGalleryPriceRub(item.price)}
           </p>
         ) : null}
 
