@@ -16,23 +16,23 @@ export default function Footer() {
   const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL;
 
   return (
-    <footer className="px-6 py-12 md:px-16">
+    <footer className="px-6 py-4 md:py-1 md:px-16">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-8 md:flex-row">
-        <Logo variant="inverse" />
+        <Logo />
 
-        <p className="section-label text-[.65rem] tracking-widest text-(--red-light)/45">
+        <p className="section-label text-[.65rem] tracking-widest text-red-light/45">
           © {new Date().getFullYear()} · Авторские кружки · Роспись глазурью
         </p>
 
         <nav aria-label="Соцсети" className="flex items-center gap-6">
           <a
-            className="section-label text-white/30 transition-colors hover:text-(--red-light)"
+            className="section-label text-white/30 transition-colors hover:text-red-light"
             {...externalLinkAttrs(telegramUrl)}
           >
             Telegram
           </a>
           <a
-            className="section-label text-white/30 transition-colors hover:text-(--red-light)"
+            className="section-label text-white/30 transition-colors hover:text-red-light"
             {...externalLinkAttrs(instagramUrl)}
           >
             Instagram

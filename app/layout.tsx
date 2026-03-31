@@ -4,9 +4,9 @@ import "./globals.css";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
-  "https://your-site.com";
+  "https://art-ceramic-psi.vercel.app/";
 
-const previewImage = `${siteUrl}/preview.jpg`;
+const previewImage = `images/preview.jpg`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
       "Создай свою кружку с индивидуальным дизайном. Ручная роспись глазурью.",
     url: siteUrl,
     type: "website",
-    images: [{ url: "/preview.jpg", alt: "Превью сайта" }],
+    images: [{ url: "images/preview.jpg", alt: "Создай свою кружку с индивидуальным дизайном" }],
   },
   twitter: {
     card: "summary_large_image",

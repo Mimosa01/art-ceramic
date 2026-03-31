@@ -1,7 +1,8 @@
 import { useCallback, type KeyboardEvent } from "react";
-import { GalleryItemRow } from "@/types/gallery";
-import { useModalStore } from "@/store/modalStore";
 import Image from "next/image";
+import { formatGalleryPriceRub } from "@/lib/galleryAdmin";
+import { useModalStore } from "@/store/modalStore";
+import { GalleryItemRow } from "@/types/gallery";
 
 export type DesctopCardProps = {
   item: GalleryItemRow;
@@ -90,6 +91,11 @@ export function DesctopCard({
         {item.description ? (
           <p className="mt-2 line-clamp-2 text-sm text-white/80">
             {item.description}
+          </p>
+        ) : null}
+        {item.price != null ? (
+          <p className="mt-2 text-sm font-semibold text-white tabular-nums">
+            {formatGalleryPriceRub(item.price)}
           </p>
         ) : null}
 
